@@ -1,24 +1,72 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import { CreateTodoButton } from "./components/CreateTodoButton";
+import { TodoCounter } from "./components/TodoCounter";
+import { TodoList } from "./components/TodoList";
+import { TodoSearch } from "./components/TodoSearch";
+
+
+const defaultTodos = [
+  {
+    "id": "ccw-1",
+    "name": "Coding Challenge White",
+    "completed": true,
+    "brand": "Coding Challenge Brewery"
+  }, {
+    "id": "sw-1",
+    "name": "Share White",
+    "completed": false,
+    "brand": "Share",
+  }, {
+    "id": "bspa-1",
+    "name": "Beer Sans Pale Ale",
+    "completed": true,
+    "brand": "Beer Sans Brewery"
+  }, {
+    "id": "ccb-1",
+    "name": "Coding Challenge Brown",
+    "completed": false,
+    "brand": "Coding Challenge Brewery"
+  }, {
+    "id": "ccw-2",
+    "name": "Coding Challenge Wheat",
+    "completed": true,
+    "brand": "Coding Challenge Brewery"
+  }];
 
 function App() {
+
+  const [searchValue, setSearchValue] = useState('')
+  const [todos] = useState(defaultTodos)
+
+  const completedTodos = todos.filter(todo => !!todo.completed).length;
+  const totalTodos = todos.length;
+
+  let searchedTodos = [];
+
+  if (searchValue.length <= 1) {
+    searchedTodos = todos;
+  } else {
+
+    searchedTodos = todos.filter(todo => {
+      const todoName = todo.name.toLowerCase();
+      const todoBrand = todo.brand.toLowerCase();
+      const searchText = searchValue.toLowerCase();
+
+      return todoName.includes(searchText) || todoBrand.includes(searchText);
+    })
+  }
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <TodoCounter totalTodos={totalTodos} completedTodos={completedTodos} />
+
+      <TodoSearch searchValue={searchValue} setSearchValue={setSearchValue} />
+
+      <TodoList todos={searchedTodos} />
+
+      <CreateTodoButton />
+    </>
   );
 }
 
