@@ -28,7 +28,7 @@
 
 import { useState } from "react";
 
-export const useLocalStorage = (itemName) => {
+export const useLocalStorage = (itemName, initialValue = []) => {
 
     const localStorageItem = localStorage.getItem(itemName);
 
@@ -36,7 +36,8 @@ export const useLocalStorage = (itemName) => {
 
     if (!localStorageItem) {
 
-        localStorage.setItem(itemName, JSON.stringify([]));
+        localStorage.setItem(itemName, JSON.stringify(initialValue));
+        parsedItem = initialValue;
 
     } else {
         parsedItem = JSON.parse(localStorageItem);
