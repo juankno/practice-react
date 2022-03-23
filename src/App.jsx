@@ -3,63 +3,25 @@ import { CreateTodoButton } from "./components/CreateTodoButton";
 import { TodoCounter } from "./components/TodoCounter";
 import { TodoList } from "./components/TodoList";
 import { TodoSearch } from "./components/TodoSearch";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
-
-// const defaultTodos = [
-//   {
-//     "id": "ccw-1",
-//     "name": "Coding Challenge White",
-//     "completed": true,
-//     "brand": "Coding Challenge Brewery"
-//   }, {
-//     "id": "sw-1",
-//     "name": "Share White",
-//     "completed": false,
-//     "brand": "Share",
-//   }, {
-//     "id": "bspa-1",
-//     "name": "Beer Sans Pale Ale",
-//     "completed": true,
-//     "brand": "Beer Sans Brewery"
-//   }, {
-//     "id": "ccb-1",
-//     "name": "Coding Challenge Brown",
-//     "completed": false,
-//     "brand": "Coding Challenge Brewery"
-//   }, {
-//     "id": "ccw-2",
-//     "name": "Coding Challenge Wheat",
-//     "completed": true,
-//     "brand": "Coding Challenge Brewery"
-//   }];
 
 function App() {
 
-  const localStorageTodos = localStorage.getItem("TODOS_V1");
-
-  let parsedTodos;
-
-  if (!localStorageTodos) {
-
-    localStorage.setItem("TODOS_V1", JSON.stringify([]));
-
-  } else {
-    parsedTodos = JSON.parse(localStorageTodos);
-  }
+  const [items, changeItems] = useLocalStorage('TODOS_V1');
 
   const [searchValue, setSearchValue] = useState('')
-  const [todos, setTodos] = useState(parsedTodos)
 
-  const completedTodos = todos.filter(todo => !!todo.completed).length;
-  const totalTodos = todos.length;
+  const completedItems = items.filter(todo => !!todo.completed).length;
+  const totalItems = items.length;
 
-  let searchedTodos = [];
+  let searchedItems = [];
 
   if (searchValue.length <= 1) {
-    searchedTodos = todos;
+    searchedItems = items;
   } else {
 
-    searchedTodos = todos.filter(todo => {
+    searchedItems = items.filter(todo => {
       const todoName = todo.name.toLowerCase();
       const todoBrand = todo.brand.toLowerCase();
       const searchText = searchValue.toLowerCase();
@@ -68,39 +30,33 @@ function App() {
     })
   }
 
-  const changeTodos = (newTodos) => {
-    const stringifiedTodos = JSON.stringify(newTodos);
-    localStorage.setItem('TODOS_V1', stringifiedTodos);
-    setTodos(newTodos);
-  }
-
 
   const completeTodo = (id) => {
 
-    const todoIndex = todos.findIndex(todo => todo.id === id);
-    const newTodos = [...todos];
+    const todoIndex = items.findIndex(todo => todo.id === id);
+    const newItems = [...items];
 
-    newTodos[todoIndex].completed = true;
-    changeTodos(newTodos);
+    newItems[todoIndex].completed = true;
+    changeItems(newItems);
   }
 
   const deleteTodo = (id) => {
 
-    const todoIndex = todos.findIndex(todo => todo.id === id);
-    const newTodos = [...todos];
+    const todoIndex = items.findIndex(todo => todo.id === id);
+    const newItems = [...items];
 
-    newTodos.splice(todoIndex, 1);
-    changeTodos(newTodos);
+    newItems.splice(todoIndex, 1);
+    changeItems(newItems);
   }
 
 
   return (
     <>
-      <TodoCounter totalTodos={totalTodos} completedTodos={completedTodos} />
+      <TodoCounter totalTodos={totalItems} completedTodos={completedItems} />
 
       <TodoSearch searchValue={searchValue} setSearchValue={setSearchValue} />
 
-      <TodoList todos={searchedTodos} onComplete={completeTodo} onDelete={deleteTodo} />
+      <TodoList todos={searchedItems} onComplete={completeTodo} onDelete={deleteTodo} />
 
       <CreateTodoButton />
     </>
