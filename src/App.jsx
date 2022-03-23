@@ -8,7 +8,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 
 function App() {
 
-  const [items, changeItems] = useLocalStorage('TODOS_V1');
+  const { items, changeItems, loading, error } = useLocalStorage('TODOS_V1', []);
 
   const [searchValue, setSearchValue] = useState('')
 
@@ -56,7 +56,11 @@ function App() {
 
       <TodoSearch searchValue={searchValue} setSearchValue={setSearchValue} />
 
-      <TodoList todos={searchedItems} onComplete={completeTodo} onDelete={deleteTodo} />
+      <TodoList
+        todos={searchedItems}
+        onComplete={completeTodo}
+        onDelete={deleteTodo} loading={loading}
+        error={error} />
 
       <CreateTodoButton />
     </>

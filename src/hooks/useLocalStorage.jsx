@@ -26,36 +26,56 @@
 //     "brand": "Coding Challenge Brewery"
 //   }];
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const useLocalStorage = (itemName, initialValue = []) => {
 
-    const localStorageItem = localStorage.getItem(itemName);
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
+    const [items, setItem] = useState(initialValue);
 
-    let parsedItem;
+    useEffect(() => {
+        setTimeout(() => {
+            try {
+                const localStorageItem = localStorage.getItem(itemName);
 
-    if (!localStorageItem) {
+                let parsedItem;
 
-        localStorage.setItem(itemName, JSON.stringify(initialValue));
-        parsedItem = initialValue;
+                if (!localStorageItem) {
 
-    } else {
-        parsedItem = JSON.parse(localStorageItem);
-    }
+                    localStorage.setItem(itemName, JSON.stringify(initialValue));
+                    parsedItem = initialValue;
 
-    const [items, setItems] = useState(parsedItem);
+                } else {
+                    parsedItem = JSON.parse(localStorageItem);
+                }
+
+                setItem(parsedItem);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+            }
+        }, 1000);
+    })
+
 
     const changeItems = (newItems) => {
-        const stringifieditems = JSON.stringify(newItems);
-        localStorage.setItem(itemName, stringifieditems);
-        setItems(newItems);
+        try {
+            const stringifieditems = JSON.stringify(newItems);
+            localStorage.setItem(itemName, stringifieditems);
+            setItem(newItems);
+        } catch (error) {
+            setError(error);
+        }
     }
 
 
-    return [
+    return {
         items,
-        changeItems
-    ];
+        changeItems,
+        loading,
+        error,
+    };
 
 
 }
