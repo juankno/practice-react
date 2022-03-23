@@ -1,29 +1,22 @@
 import React from 'react'
 import '../assets/TodoItem.css'
 
-export const TodoItem = ({ todo }) => {
+export const TodoItem = ({ todo, completeTodo, deleteTodo }) => {
 
-  const { id, name, completed, brand } = todo;
+  const { name, completed, brand } = todo;
 
-  const onComplete = (id) => {
-    alert('item Completado');
-  }
-
-  const onDelete = (id) => {
-    alert('item eliminado');
-  }
 
   return (
     <>
       <li className="TodoItem">
-        <span className={`Icon Icon-check ${completed && 'Icon-check--active'}`} onClick={() => onComplete(id)}>
+        <span className={`Icon Icon-check ${completed && 'Icon-check--active'}`} onClick={completeTodo}>
           √
         </span>
         <p className={`TodoItem-p ${completed && 'TodoItem-p--complete'}`}>
           {name}
-        <small>{brand}</small>
+          <small>{brand}</small>
         </p>
-        <span className="Icon Icon-delete" onClick={() => onDelete(id)}>
+        <span className="Icon Icon-delete" onClick={deleteTodo}>
           X
         </span>
       </li>

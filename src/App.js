@@ -36,7 +36,7 @@ const defaultTodos = [
 function App() {
 
   const [searchValue, setSearchValue] = useState('')
-  const [todos] = useState(defaultTodos)
+  const [todos, setTodos] = useState(defaultTodos)
 
   const completedTodos = todos.filter(todo => !!todo.completed).length;
   const totalTodos = todos.length;
@@ -56,6 +56,24 @@ function App() {
     })
   }
 
+  const completeTodo = (id) => {
+
+    const todoIndex = todos.findIndex(todo => todo.id === id);
+    const newTodos = [...todos];
+
+    newTodos[todoIndex].completed = true;
+    setTodos(newTodos);
+  }
+
+  const deleteTodo = (id) => {
+
+    const todoIndex = todos.findIndex(todo => todo.id === id);
+    const newTodos = [...todos];
+
+    newTodos.splice(todoIndex, 1);
+    setTodos(newTodos);
+  }
+
 
   return (
     <>
@@ -63,7 +81,7 @@ function App() {
 
       <TodoSearch searchValue={searchValue} setSearchValue={setSearchValue} />
 
-      <TodoList todos={searchedTodos} />
+      <TodoList todos={searchedTodos} onComplete={completeTodo} onDelete={deleteTodo} />
 
       <CreateTodoButton />
     </>
